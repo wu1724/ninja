@@ -209,15 +209,23 @@ impl Session {
 
         // Build concise challenge
         let (game_type, challenge_urls, key) = {
+            let game_variant_or_instruction_string = if challenge.game_data.game_type == 3 {
+                challenge.game_data.game_variant.clone()
+            } else {
+                challenge.game_data.instruction_string.clone()
+            };
+        
             (
                 "image",
                 challenge.game_data.custom_gui.challenge_imgs.clone(),
                 format!(
                     "{}.instructions-{}",
-                    challenge.game_data.game_type, challenge.game_data.instruction_string
+                    challenge.game_data.game_type,
+                    game_variant_or_instruction_string
                 ),
             )
         };
+
 
         let remove_html_tags = |input: &str| {
             let re = regex::Regex::new(r"<[^>]*>").expect("invalid regex");
